@@ -68,3 +68,104 @@ char line[20],label[8],opcode[8],operand[8],programname[10];
                     fclose(inter);
                     fclose(input);
                       }
+                        void PASS2()
+          {
+                FILE *inter,*output;
+                char record[30],part[6],value[5];
+                int currtxtlen=0,foundopcode,foundoperand,chk,operandaddr,recaddr=0;
+                inter=fopen("inter.txt","r");
+                output=fopen("output.txt","w");
+                fgets(line,20,inter);
+               
+                READ_LINE();
+                if(!strcmp(opcode,"START")) fgets(line,20,inter);
+               printf("\n\nCorresponding Object code is..\n");
+               printf("\nH^ %s ^ %d ^ %d ",programname,startaddr,length);
+               fprintf(output,"\nH^ %s ^ %d ^ %d ",programname,startaddr,length);
+               recaddr=startaddr; record[0]='\0';
+               while(strcmp(line,"END")!=0)
+                          {
+                                             operandaddr=foundoperand=foundopcode=0;
+                                             value[0]=part[0]= '\0';
+                                             READ_LINE();
+           for(chk=0;chk<3;chk++)
+             {
+               if(!strcmp(opcode,myoptab[chk].code))
+               {                                     
+               foundopcode=1;
+               strcpy(part,myoptab[chk].objcode);
+             
+             if(operand[0]!='\0')
+             {
+             for(chk=0;chk<symcount;chk++)
+                                   
+             if(!strcmp(mysymtab[chk].symbol,operand))
+             {
+             itoa(mysymtab[chk].addr,value,10);
+             strcat(part,value);
+             foundoperand=1;
+             }
+              if(!foundoperand)strcat(part,"err"); 
+              }
+              }
+              }
+               if(!foundopcode)
+               {
+                               if(strcmp(opcode,"BYTE")==0 || strcmp(opcode,"WORD")||strcmp(opcode,"RESB"))
+                               {strcat(part,operand);
+                              }}
+               if((currtxtlen+strlen(part))<=8)
+               {
+                strcat(record,"^");
+                strcat(record,part);
+                
+                currtxtlen+=strlen(part);
+               }
+                else
+                {
+                 printf("\nT^ %d ^%d %s",recaddr,currtxtlen,record);
+                 fprintf(output,"\nT^ %d ^%d %s",recaddr,currtxtlen,record);
+                 recaddr+=currtxtlen;
+                 currtxtlen=strlen(part);
+                 strcpy(record,part);
+                
+               
+               
+                }
+          fgets(line,20,inter);
+                }   
+                      printf("\nT^ %d ^%d %s",recaddr,currtxtlen,record);
+                      fprintf(output,"\nT^ %d ^%d %s",recaddr,currtxtlen,record);
+                      printf("\nE^ %d\n",startaddr);
+                      fprintf(output,"\nE^ %d\n",startaddr);
+                      fclose(inter);
+                      fclose(output);
+       }           
+//=================================================
+ 
+       void READ_LINE()
+       { 
+            char buff[8],word1[8],word2[8],word3[8];
+            int i,j=0,count=0;
+             label[0]=opcode[0]=operand[0]=word1[0]=word2[0]=word3[0]='\0';
+                 for(i=0;line[i]!='\0';i++)
+                      {
+                   if(line[i]!=' ')buff[j++]=line[i];
+                   else
+                      {
+                     buff[j]='\0';
+                     strcpy(word3,word2);strcpy(word2,word1);strcpy(word1,buff); 
+                     j=0;count++;
+                      }
+                      }
+                      buff[j-1]='\0';
+                      strcpy(word3,word2);
+                      strcpy(word2,word1); 
+                      strcpy(word1,buff);
+                    switch(count)
+                       {
+                                    case 0:strcpy(opcode,word1);break;
+                                    case 1:{strcpy(opcode,word2);strcpy(operand,word1);}break;
+                                    case 2:{strcpy(label,word3);strcpy(opcode,word2);strcpy(operand,word1);}break;
+                       }
+                       }

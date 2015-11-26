@@ -1,171 +1,145 @@
-# dhritiproject
- #include<stdio.h>
+#dhritiproject
+#include<stdio.h>
+#include<conio.h>
 #include<string.h>
-void chk_label();
-void chk_opcode();
-void READ_LINE();
-struct optab
+void main()
 {
-    char   code[10],objcode[10];
-}myoptab[3]={
-                   {"LDA","00"},
-                   {"JMP","01"},
-                   {"STA","02"}
-             };
-                   
-                   
-struct symtab{
-                    char symbol[10];
-                    int addr;
-              }mysymtab[10];
-                    
-int startaddr,locctr,symcount=0,length;
-char line[20],label[8],opcode[8],operand[8],programname[10];
-                    
-//                void PASS1()
-                  {
-                       FILE *input,*inter;                                   
-                       input=fopen("input.txt","r");                             
-                       inter=fopen("inter.txt","w"); 
-                        printf("LOCATION LABEL\tOPERAND\tOPCODE\n");
-                        printf("_____________________________________");                       
-                        fgets(line,20,input);
-                      
-                      READ_LINE();
-                      
-                     if(!strcmp(opcode,"START"))
-                      {
-                      
-                       startaddr=atoi(operand); 
-                       locctr=startaddr;                     
-                      strcpy(programname,label);
-                       
-                           fprintf(inter,"%s",line);
-                       fgets(line,20,input);
-                       }
-                      else
-                      {
-                          programname[0]='\0';
-                          startaddr=0;
-                          locctr=0;
-                      }
-                         printf("\n %d\t %s\t%s\t %s",locctr,label,opcode,operand);  
-                          
-                           while(strcmp(line,"END")!=0)
-                          {
-                   
-                                   READ_LINE();
-                                   printf("\n %d\t %s \t%s\t %s",locctr,label,opcode,operand);
-                                   if(label[0]!='\0')chk_label();
-                                   chk_opcode(); 
-                                   fprintf(inter,"%s %s %s\n",label,opcode,operand);
-                                   fgets(line,20,input);
-                          }
-                          
-                   printf("\n %d\t\t%s",locctr,line);
-                   fprintf(inter,"%s",line);
-  
-                    fclose(inter);
-                    fclose(input);
-                      }
-                        void PASS2()
-          {
-                FILE *inter,*output;
-                char record[30],part[6],value[5];
-                int currtxtlen=0,foundopcode,foundoperand,chk,operandaddr,recaddr=0;
-                inter=fopen("inter.txt","r");
-                output=fopen("output.txt","w");
-                fgets(line,20,inter);
-               
-                READ_LINE();
-                if(!strcmp(opcode,"START")) fgets(line,20,inter);
-               printf("\n\nCorresponding Object code is..\n");
-               printf("\nH^ %s ^ %d ^ %d ",programname,startaddr,length);
-               fprintf(output,"\nH^ %s ^ %d ^ %d ",programname,startaddr,length);
-               recaddr=startaddr; record[0]='\0';
-               while(strcmp(line,"END")!=0)
-                          {
-                                             operandaddr=foundoperand=foundopcode=0;
-                                             value[0]=part[0]= '\0';
-                                             READ_LINE();
-           for(chk=0;chk<3;chk++)
-             {
-               if(!strcmp(opcode,myoptab[chk].code))
-               {                                     
-               foundopcode=1;
-               strcpy(part,myoptab[chk].objcode);
-             
-             if(operand[0]!='\0')
-             {
-             for(chk=0;chk<symcount;chk++)
-                                   
-             if(!strcmp(mysymtab[chk].symbol,operand))
-             {
-             itoa(mysymtab[chk].addr,value,10);
-             strcat(part,value);
-             foundoperand=1;
-             }
-              if(!foundoperand)strcat(part,"err"); 
-              }
-              }
-              }
-               if(!foundopcode)
-               {
-                               if(strcmp(opcode,"BYTE")==0 || strcmp(opcode,"WORD")||strcmp(opcode,"RESB"))
-                               {strcat(part,operand);
-                              }}
-               if((currtxtlen+strlen(part))<=8)
-               {
-                strcat(record,"^");
-                strcat(record,part);
-                
-                currtxtlen+=strlen(part);
-               }
-                else
-                {
-                 printf("\nT^ %d ^%d %s",recaddr,currtxtlen,record);
-                 fprintf(output,"\nT^ %d ^%d %s",recaddr,currtxtlen,record);
-                 recaddr+=currtxtlen;
-                 currtxtlen=strlen(part);
-                 strcpy(record,part);
-                
-               
-               
-                }
-          fgets(line,20,inter);
-                }   
-                      printf("\nT^ %d ^%d %s",recaddr,currtxtlen,record);
-                      fprintf(output,"\nT^ %d ^%d %s",recaddr,currtxtlen,record);
-                      printf("\nE^ %d\n",startaddr);
-                      fprintf(output,"\nE^ %d\n",startaddr);
-                      fclose(inter);
-                      fclose(output);
-       }           
+  char a[10],ad[10],label[10],opcode[10],operand[10],symbol[10],ch;
+  int st,diff,i,address,add,len,actual_len,finaddr,prevaddr,j=0;
+  char mnemonic[15][15]={"LDA","STA","LDCH","STCH"};
+  char code[15][15]={"33","44","53","57"};
+  FILE *fp1,*fp2,*fp3,*fp4;
+  //clrscr();
+  fp1=fopen("ASSMLIST.DAT","w");
+  fp2=fopen("SYMTAB.DAT","r");
+  fp3=fopen("INTERMED.DAT","r");
+  fp4=fopen("OBJCODE.DAT","w");
+  fscanf(fp3,"%s%s%s",label,opcode,operand);
 
- 
-       void READ_LINE()
-       { 
-            char buff[8],word1[8],word2[8],word3[8];
-            int i,j=0,count=0;
-             label[0]=opcode[0]=operand[0]=word1[0]=word2[0]=word3[0]='\0';
-                 for(i=0;line[i]!='\0';i++)
-                      {
-                   if(line[i]!=' ')buff[j++]=line[i];
-                   else
-                      {
-                     buff[j]='\0';
-                     strcpy(word3,word2);strcpy(word2,word1);strcpy(word1,buff); 
-                     j=0;count++;
-                      }
-                      }
-                      buff[j-1]='\0';
-                      strcpy(word3,word2);
-                      strcpy(word2,word1); 
-                      strcpy(word1,buff);
-                    switch(count)
-                       {
-                                    case 0:strcpy(opcode,word1);break;
-                                    case 1:{strcpy(opcode,word2);strcpy(operand,word1);}break;
-                                    case 2:{strcpy(label,word3);strcpy(opcode,word2);strcpy(operand,word1);}break;
-                       }
-                       }
+  while(strcmp(opcode,"END")!=0)
+  {
+   prevaddr=address;
+   fscanf(fp3,"%d%s%s%s",&address,label,opcode,operand);
+  }
+  finaddr=address;
+  fclose(fp3);
+  fp3=fopen("INTERMED.DAT","r");
+
+  fscanf(fp3,"%s%s%s",label,opcode,operand);
+  if(strcmp(opcode,"START")==0)
+  {
+   fprintf(fp1,"\t%s\t%s\t%s\n",label,opcode,operand);
+   fprintf(fp4,"H^%s^00%s^00%d\n",label,operand,finaddr);
+   fscanf(fp3,"%d%s%s%s",&address,label,opcode,operand);
+   st=address;
+   diff=prevaddr-st;
+   fprintf(fp4,"T^00%d^%d",address,diff);
+  }
+  while(strcmp(opcode,"END")!=0)
+  {
+   if(strcmp(opcode,"BYTE")==0)
+   {
+    fprintf(fp1,"%d\t%s\t%s\t%s\t",address,label,opcode,operand);
+    len=strlen(operand);
+    actual_len=len-3;
+    fprintf(fp4,"^");
+    for(i=2;i<(actual_len+2);i++)
+    {
+     itoa(operand[i],ad,16);
+     fprintf(fp1,"%s",ad);
+     fprintf(fp4,"%s",ad);
+    }
+    fprintf(fp1,"\n");
+   }
+   else if(strcmp(opcode,"WORD")==0)
+   {
+    len=strlen(operand);
+    itoa(atoi(operand),a,10);
+    fprintf(fp1,"%d\t%s\t%s\t%s\t00000%s\n",address,label,opcode,operand,a);
+    fprintf(fp4,"^00000%s",a);
+   }
+   else if((strcmp(opcode,"RESB")==0)||(strcmp(opcode,"RESW")==0))
+    fprintf(fp1,"%d\t%s\t%s\t%s\n",address,label,opcode,operand);
+   else
+   {
+    while(strcmp(opcode,mnemonic[j])!=0)
+     j++;
+    if(strcmp(operand,"COPY")==0)
+     fprintf(fp1,"%d\t%s\t%s\t%s\t%s0000\n",address,label,opcode,operand,code[j]);
+    else
+    {
+     rewind(fp2);
+     fscanf(fp2,"%s%d",symbol,&add);
+      while(strcmp(operand,symbol)!=0)
+       fscanf(fp2,"%s%d",symbol,&add);
+     fprintf(fp1,"%d\t%s\t%s\t%s\t%s%d\n",address,label,opcode,operand,code[j],add);
+     fprintf(fp4,"^%s%d",code[j],add);
+    }
+   }
+   fscanf(fp3,"%d%s%s%s",&address,label,opcode,operand);
+  }
+  fprintf(fp1,"%d\t%s\t%s\t%s\n",address,label,opcode,operand);
+  fprintf(fp4,"\nE^00%d",st);
+  printf("\n Intermediate file is converted into object code");
+  fclose(fp4);
+  fclose(fp3);
+
+  printf("\n\nThe contents of Intermediate file:\n\n\t");
+  fp3=fopen("INTERMED.DAT","r");
+  ch=fgetc(fp3);
+  while(ch!=EOF)
+  {
+   printf("%c",ch);
+   ch=fgetc(fp3);
+  }
+  printf("\n\nThe contents of Symbol Table :\n\n");
+  fp2=fopen("SYMTAB.DAT","r");
+  ch=fgetc(fp2);
+  while(ch!=EOF)
+  {
+   printf("%c",ch);
+   ch=fgetc(fp2);
+  }
+  printf("\n\nThe contents of Output file :\n\n");
+  fp1=fopen("ASSMLIST.DAT","r");
+  ch=fgetc(fp1);
+  while(ch!=EOF)
+  {
+   printf("%c",ch);
+   ch=fgetc(fp1);
+  }
+  printf("\n\nThe contents of Object code file :\n\n");
+  fp4=fopen("OBJCODE.DAT","r");
+  ch=fgetc(fp4);
+  while(ch!=EOF)
+  {
+   printf("%c",ch);
+   ch=fgetc(fp4);
+  }
+  fclose(fp1);
+  fclose(fp2);
+  fclose(fp3);
+  fclose(fp4);
+  getch();
+}
+
+/*INPUT FILES:
+
+INTERMED.DAT
+COPY    START    2000
+2000    **    LDA    FIVE
+2003    **    STA    ALPHA
+2006    **    LDCH    CHARZ
+2009    **    STCH    C1
+2012    ALPHA    RESW    1
+2015    FIVE    WORD    5
+2018    CHARZ    BYTE    C'EOF'
+2019    C1    RESB    1
+2020    **    END    **
+
+SYMTAB.DAT
+ALPHA    2012
+FIVE    2015
+CHARZ    2018
+C1    2019
+*/

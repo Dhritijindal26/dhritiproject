@@ -66,6 +66,15 @@ void main()
       j++;
       if(strcmp(operand,"COPY")==0)
        fprintf(fp1,"%d\t%s\t%s\t%s\t%s0000\n",address,label,opcode,operand,code[j]);
+      else
+      {
+        rewind(fp2);
+        fscanf(fp2,"%s%d",symbol,&b2);
+        while(strcmp(operand,symbol)!=0)
+        fscanf(fp2,"%s%d",symbol,&b2);
+        fprintf(fp1,"%d\t%s\t%s\t%s\t%s%d\n",address,label,opcode,operand,code[j],b2);
+        fprintf(fp3,"^%s%d",code[j],b2);
+      }
+     }
    }while(strcmp(opcode,"END")!=0)
 }
-

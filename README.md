@@ -6,8 +6,9 @@
 
 void main()
 {
-    char arr[10],b[10],label[10],opcode[10],operand[10],symbol[10],choice;
-    int start,difference,i,address,b2,length,act_len,fin_ad,prev_ad,j=0;
+    char arr[10],b[10],label[10],opcode[10],operand[10],symbol[10],ch;
+    int start,difference,i,address,b2,length,act_len,fin_ad,prev_ad,j=0,choice;
+    long long int k,z=0;
     char mnemonic[15][15]={"LDE","STO","LDEH","STOH"};
     char code[15][15]={"20","35","48","60"};
     FILE *fp1,*fp2,*fp3,*fp4;
@@ -25,11 +26,12 @@ void main()
    fp4=fopen("INTERMEDIATE.DAT","r");
    fp1=fopen("ASSEMBLYLIST.DAT","w");
    fp3=fopen("OBJECTCODE.DAT","w");
+   fp2=fopen("SYMBOLTABLE.DAT","r");
    fscanf(fp4,"%s%s%s",label,opcode,operand);
    if(strcmp(opcode,"START")==0)
    {
      fprintf(fp1,"\t%s\t%s\t%s\n",label,opcode,operand);
-     fprintf(fp3,"H^%s^00%s^00%d\n",label,operand,finaddr);
+     fprintf(fp3,"H^%s^00%s^00%d\n",label,operand,fin_ad);
      fscanf(fp4,"%d%s%s%s",&address,label,opcode,operand);
      start=address;
      difference=prev_ad-start;
@@ -76,5 +78,72 @@ void main()
         fprintf(fp3,"^%s%d",code[j],b2);
       }
      }
-   }while(strcmp(opcode,"END")!=0)
+     fscanf(fp4,"%d%s%s%s",&address,label,opcode,operand);
+   }while(strcmp(opcode,"END")!=0);
+   fprintf(fp1,"%d\t%s\t%s\t%s\n",address,label,opcode,operand);
+   fprintf(fp3,"\nE^00%d",start);
+ // printf("\n Intermediate file is converted into object code");
+  fclose(fp3);
+  fclose(fp4);
+  fclose(fp1);
+      printf("************************************ASSEMBLER***********************************\n");
+      system("color 5");
+      printf("Press Enter to continue.........");
+      getchar();
+  do
+  {
+      printf("Enter your choice\n\t\t\tPress 1 to show the program\n\t\t\tPress 2 to check Symbol Table\n\t\t\tPress 3 to calculate object file\n\t\t\tPress 4 to check output file\n\t\t\tPress 5 to exit\n\n");
+      scanf("%d",&choice);
+      switch(choice)
+      {
+       case 1:
+        fp4=fopen("INTERMEDIATE.DAT","r");
+        ch=fgetc(fp4);
+        while(ch!=EOF)
+        {
+         printf("%c",ch);
+         ch=fgetc(fp4);
+        }
+        break;
+       case 2:
+          fp2=fopen("SYMBOLTABLE.DAT","r");
+          ch=fgetc(fp2);
+          while(ch!=EOF)
+          {
+           printf("%c",ch);
+           ch=fgetc(fp2);
+          }
+          break;
+      case 3:
+        for(k=0;k<50000000;k++)
+        {
+         // printf("Object file calculated");
+         z++;
+        }
+        printf("Object file calculated\n\n");
+        fp3=fopen("OBJECTCODE.DAT","r");
+        ch=fgetc(fp3);
+        while(ch!=EOF)
+        {
+         printf("%c",ch);
+         ch=fgetc(fp3);
+        }
+        fclose(fp3);
+        break;
+      case 4:
+       fp1=fopen("ASSEMBLYLIST.DAT","r");
+       ch=fgetc(fp1);
+       while(ch!=EOF)
+       {
+        printf("%c",ch);
+        ch=fgetc(fp1);
+       }
+        break;
+      case 5:
+        exit(0);
+
+    }
+   printf("\n\t\t\t\t\t\t\t\t by DIVYA JAIN\n\t\t\t\t\t\t\t\t   DHRITI JINDAL");
+  }while(choice<5);
 }
+

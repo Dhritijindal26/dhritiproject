@@ -147,5 +147,3 @@ void main()
 
   }while(choice<6);
 }
-
-

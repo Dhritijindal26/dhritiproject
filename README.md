@@ -1,5 +1,6 @@
 #dhritiproject
 
+
 #include<stdio.h>
 #include<conio.h>
 #include<string.h>
@@ -35,4 +36,22 @@ void main()
      difference=prev_ad-start;
      fprintf(fp3,"T^00%d^%d",address,difference);
    }
+   do
+   {
+    if(strcmp(opcode,"BYTE")==0)
+    {
+     fprintf(fp1,"%d\t%s\t%s\t%s\t",address,label,opcode,operand);
+     length=strlen(operand);
+     act_len=length-3;
+     fprintf(fp3,"^");
+     for(i=2;i<(act_len+2);i++)
+     {
+      itoa(operand[i],b,16);
+      fprintf(fp1,"%s",b);
+      fprintf(fp3,"%s",b);
+     }
+     fprintf(fp1,"\n");
+    }
+   }while(strcmp(opcode,"END")!=0)
 }
+

@@ -159,3 +159,14 @@ COPY	START	2000
 2015	C1	RESB	1
 2016	**	END	**
 */
+/*INTERMEDIATE.DAT
+COPY    START    2000
+2000    **    LDE    FIVE
+2003    **    STO    ALPHA
+2006    **    LDEH    CHARZ
+2009    **    STOH    C1
+200C    ALPHA    RESW    1
+200F    FIVE    WORD    5
+2012    CHARZ    BYTE    C'EOF'
+2015    C1    RESB    1
+2016    **    END    ** */

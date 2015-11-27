@@ -5,7 +5,7 @@
 #include<string.h>
 
 void main()
-{
+{ 
     char arr[10],b[10],label[10],opcode[10],operand[10],symbol[10],ch;
    unsigned int start,difference,i,address,b2,length,act_len,fin_ad,prev_ad,j=0,choice;
     long long int k,z=0;

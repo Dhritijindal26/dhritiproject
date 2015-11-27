@@ -7,7 +7,7 @@
 void main()
 {
     char arr[10],b[10],label[10],opcode[10],operand[10],symbol[10],ch;
-    int start,difference,i,address,b2,length,act_len,fin_ad,prev_ad,j=0,choice;
+   unsigned int start,difference,i,address,b2,length,act_len,fin_ad,prev_ad,j=0,choice;
     long long int k,z=0;
     char mnemonic[15][15]={"LDE","STO","LDEH","STOH"};
     char code[15][15]={"20","35","48","60"};
@@ -19,7 +19,7 @@ void main()
    while(strcmp(opcode,"END")!=0)
    {
     prev_ad=address;
-    fscanf(fp4,"%d%s%s%s",&address,label,opcode,operand);
+    fscanf(fp4,"%x%s%s%s",&address,label,opcode,operand);
    }
    fin_ad=address;
    fclose(fp4);
@@ -31,17 +31,17 @@ void main()
    if(strcmp(opcode,"START")==0)
    {
      fprintf(fp1,"\t%s\t%s\t%s\n",label,opcode,operand);
-     fprintf(fp3,"H^%s^00%s^00%d\n",label,operand,fin_ad);
-     fscanf(fp4,"%d%s%s%s",&address,label,opcode,operand);
+     fprintf(fp3,"H^%s^00%s^00%x\n",label,operand,fin_ad);
+     fscanf(fp4,"%x%s%s%s",&address,label,opcode,operand);
      start=address;
      difference=prev_ad-start;
-     fprintf(fp3,"T^00%d^%d",address,difference);
+     fprintf(fp3,"T^00%x^%x",address,difference);
    }
    do
    {
     if(strcmp(opcode,"BYTE")==0)
     {
-     fprintf(fp1,"%d\t%s\t%s\t%s\t",address,label,opcode,operand);
+     fprintf(fp1,"%x\t%s\t%s\t%s\t",address,label,opcode,operand);
      length=strlen(operand);
      act_len=length-3;
      fprintf(fp3,"^");
@@ -57,31 +57,31 @@ void main()
     {
      length=strlen(operand);
      itoa(atoi(operand),arr,10);
-     fprintf(fp1,"%d\t%s\t%s\t%s\t00000%s\n",address,label,opcode,operand,arr);
+     fprintf(fp1,"%x\t%s\t%s\t%s\t00000%s\n",address,label,opcode,operand,arr);
      fprintf(fp3,"^00000%s",arr);
     }
      else if((strcmp(opcode,"RESB")==0)||(strcmp(opcode,"RESW")==0))
-     fprintf(fp1,"%d\t%s\t%s\t%s\n",address,label,opcode,operand);
+     fprintf(fp1,"%x\t%s\t%s\t%s\n",address,label,opcode,operand);
      else
      {
       while(strcmp(opcode,mnemonic[j])!=0)
       j++;
       if(strcmp(operand,"COPY")==0)
-       fprintf(fp1,"%d\t%s\t%s\t%s\t%s0000\n",address,label,opcode,operand,code[j]);
+       fprintf(fp1,"%x\t%s\t%s\t%s\t%s0000\n",address,label,opcode,operand,code[j]);
       else
       {
         rewind(fp2);
-        fscanf(fp2,"%s%d",symbol,&b2);
+        fscanf(fp2,"%s%x",symbol,&b2);
         while(strcmp(operand,symbol)!=0)
-        fscanf(fp2,"%s%d",symbol,&b2);
-        fprintf(fp1,"%d\t%s\t%s\t%s\t%s%d\n",address,label,opcode,operand,code[j],b2);
-        fprintf(fp3,"^%s%d",code[j],b2);
+        fscanf(fp2,"%s%x",symbol,&b2);
+        fprintf(fp1,"%x\t%s\t%s\t%s\t%s%X\n",address,label,opcode,operand,code[j],b2);
+        fprintf(fp3,"^%s%x",code[j],b2);
       }
      }
-     fscanf(fp4,"%d%s%s%s",&address,label,opcode,operand);
+     fscanf(fp4,"%x%s%s%s",&address,label,opcode,operand);
    }while(strcmp(opcode,"END")!=0);
-   fprintf(fp1,"%d\t%s\t%s\t%s\n",address,label,opcode,operand);
-   fprintf(fp3,"\nE^00%d",start);
+   fprintf(fp1,"%x\t%s\t%s\t%s\n",address,label,opcode,operand);
+   fprintf(fp3,"\nE^00%x",start);
  // printf("\n Intermediate file is converted into object code");
   fclose(fp3);
   fclose(fp4);
@@ -92,7 +92,7 @@ void main()
       getchar();
   do
   {
-      printf("Enter your choice\n\t\t\tPress 1 to show the program\n\t\t\tPress 2 to check Symbol Table\n\t\t\tPress 3 to calculate object file\n\t\t\tPress 4 to check output file\n\t\t\tPress 5 to exit\n\n");
+      printf("\n\nEnter your choice\n\t\t\tPress 1 to show the program\n\t\t\tPress 2 to check Symbol Table\n\t\t\tPress 3 to calculate object file\n\t\t\tPress 4 to check output file\n\t\t\tPress 5 to exit\n\n");
       scanf("%d",&choice);
       switch(choice)
       {
@@ -140,10 +140,12 @@ void main()
        }
         break;
       case 5:
+        printf("\n\t\t\t\t by DIVYA JAIN\n\t\t\t\t    DHRITI JINDAL");
         exit(0);
 
     }
-   printf("\n\t\t\t\t\t\t\t\t by DIVYA JAIN\n\t\t\t\t\t\t\t\t   DHRITI JINDAL");
-  }while(choice<5);
+
+  }while(choice<6);
 }
+
 
